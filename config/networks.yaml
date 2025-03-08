@@ -1,0 +1,84 @@
+# PoS Networks Configuration
+
+networks:
+  ethereum:
+    enabled: true
+    endpoints:
+      - name: "Infura"
+        url: "https://mainnet.infura.io/v3/${INFURA_API_KEY}"
+        priority: 1
+      - name: "Alchemy"
+        url: "https://eth-mainnet.g.alchemy.com/v2/${ALCHEMY_API_KEY}"
+        priority: 2
+    explorer:
+      url: "https://api.etherscan.io/api"
+      api_key: "${ETHERSCAN_API_KEY}"
+    metrics:
+      - validator_count
+      - active_validators
+      - total_staked
+      - reward_rate
+      - avg_block_time
+      - finality_time
+      - transaction_throughput
+      - gas_usage
+      - mev_extraction
+
+  solana:
+    enabled: true
+    endpoints:
+      - name: "Official RPC"
+        url: "https://api.mainnet-beta.solana.com"
+        priority: 1
+      - name: "Alchemy"
+        url: "https://solana-mainnet.g.alchemy.com/v2/${ALCHEMY_SOLANA_KEY}"
+        priority: 2
+    explorer:
+      url: "https://public-api.solscan.io"
+      api_key: "${SOLSCAN_API_KEY}"
+    metrics:
+      - validator_count
+      - active_validators
+      - total_staked
+      - reward_rate
+      - avg_block_time
+      - transaction_throughput
+      - vote_account_performance
+      - slot_processing_time
+      - mev_extraction
+
+  cosmos:
+    enabled: true
+    endpoints:
+      - name: "Cosmos Hub RPC"
+        url: "https://rpc.cosmos.network"
+        priority: 1
+    explorer:
+      url: "https://api.mintscan.io/v1/cosmos"
+      api_key: "${MINTSCAN_API_KEY}"
+    metrics:
+      - validator_count
+      - active_validators
+      - total_staked
+      - reward_rate
+      - avg_block_time
+      - transaction_throughput
+      - commission_rates
+      - voting_power_distribution
+      - slashing_events
+
+  # Add more networks as needed
+  polkadot:
+    enabled: false
+    endpoints:
+      - name: "Polkadot RPC"
+        url: "https://rpc.polkadot.io"
+        priority: 1
+    # Additional configuration...
+
+collection:
+  interval_minutes: 15
+  history_days: 30
+  timeout_seconds: 30
+  retry_attempts: 3
+  batch_size: 100
