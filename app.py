@@ -99,6 +99,40 @@ analyzers = initialize_analyzers()
 # Sidebar
 st.sidebar.title("PoS Network Benchmarking")
 
+# Add this to the sidebar in app.py
+st.sidebar.markdown("## Data Options")
+if st.sidebar.button("📊 Generate Sample Data"):
+    with st.spinner("Generating sample data..."):
+        try:
+            from generate_sample_data import generate_sample_data
+            generate_sample_data()
+            st.sidebar.success("✅ Sample data generated!")
+            st.rerun()
+        except Exception as e:
+            st.sidebar.error(f"❌ Error generating sample data: {str(e)}")
+# Add this near the top of your sidebar section
+st.sidebar.markdown("## Data Collection")
+if st.sidebar.button("🔄 Collect New Data"):
+    with st.spinner("Collecting data from networks..."):
+        # Create a progress bar
+        progress_bar = st.sidebar.progress(0)
+        
+        # Collect data for each network
+        for i, network_id in enumerate(collectors.keys()):
+            st.sidebar.text(f"Collecting {network_id} data...")
+            try:
+                collectors[network_id].collect_all_metrics()
+                st.sidebar.success(f"✅ {network_id} data collected!")
+            except Exception as e:
+                st.sidebar.error(f"❌ Error collecting {network_id} data: {str(e)}")
+            
+            # Update progress
+            progress_bar.progress((i + 1) / len(collectors.keys()))
+        
+        # Complete
+        st.sidebar.success("Data collection complete!")
+        # Use rerun instead of experimental_rerun
+        st.rerun()
 # Network selection
 available_networks = list(collectors.keys())
 selected_networks = st.sidebar.multiselect(
@@ -175,7 +209,7 @@ else:
 
 # Button to refresh data
 if st.sidebar.button("🔄 Refresh Data"):
-    st.experimental_rerun()
+    st.rerun()
 
 # Dashboard header
 st.title("Proof-of-Stake Network Benchmarking Tool")
@@ -217,9 +251,21 @@ def load_analysis_data(networks, start, end, analysis_type):
                 network_dfs.append(mev_data[network])
                 
             if network_dfs:
-                # Combine all DataFrames for this network
-                combined_data[network] = pd.concat(network_dfs, axis=1, join="outer")
+    # Make sure all DataFrames have unique column names to avoid the pandas error
+                for i, df in enumerate(network_dfs):
+                    # Rename duplicate columns by adding a suffix
+                    df_columns = df.columns.tolist()
+                    seen_columns = set()
+                    for j, col in enumerate(df_columns):
+                        if col in seen_columns:
+                            new_col = f"{col}_{i}"
+                            df.rename(columns={col: new_col}, inplace=True)
+                            df_columns[j] = new_col
+                        seen_columns.add(df_columns[j])
                 
+                # Now concatenate with unique columns
+                combined_data[network] = pd.concat(network_dfs, axis=1, join="outer")
+                            
         return combined_data
     
     return {}
@@ -490,7 +536,7 @@ elif selected_analysis == "Economic Security":
             # These would be calculated from actual data in a real implementation
             nakamoto = np.random.randint(10, 100)
             stake_pct = 33.3
-            cost = np.random.randint(100000000, 10000000000) / 1000000
+            cost = np.random.randint(100000, 1000000) / 1000.0
             
             security_data["Network"].append(network)
             security_data["Nakamoto Coefficient"].append(nakamoto)

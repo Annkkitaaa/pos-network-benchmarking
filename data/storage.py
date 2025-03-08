@@ -440,6 +440,27 @@ class DataStorage:
         finally:
             if conn:
                 conn.close()
+    def _execute_query(self, query, params=None):
+        """Execute a SQL query with optional parameters."""
+        try:
+            conn = sqlite3.connect(self.db_path)
+            cursor = conn.cursor()
+            
+            if params:
+                cursor.execute(query, params)
+            else:
+                cursor.execute(query)
+                
+            conn.commit()
+            return True
+            
+        except Exception as e:
+            logger.error(f"Query execution error: {str(e)}")
+            return False
+            
+        finally:
+            if conn:
+                conn.close()
                 
     def get_available_metrics(self, network_id: str) -> Dict[str, List[str]]:
         """

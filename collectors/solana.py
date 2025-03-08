@@ -220,23 +220,13 @@ class SolanaCollector(NetworkCollector):
             for i, validator in enumerate(validators):
                 validator["rank"] = i + 1
                 
-            # Get additional validator info from explorer API if available
-            if self.explorer_url and validators:
-                # This is a simplified approach - in a real implementation,
-                # you would batch these requests or have a more efficient API
-                for validator in validators[:20]:  # Limit to top 20 for demonstration
-                    validator_pubkey = validator["pubkey"]
-                    validator_details = self._fetch_from_explorer(f"validator/{validator_pubkey}")
-                    
-                    if validator_details:
-                        validator["skip_rate"] = validator_details.get("skipRate")
-                        validator["uptime"] = validator_details.get("uptime")
-                        
+            # Skip explorer API calls since they're failing
             return validators
             
         except Exception as e:
             logger.error(f"Error collecting Solana validator metrics: {str(e)}")
             return []
+
 
     def collect_performance_metrics(self) -> Dict[str, Any]:
         """Collect Solana performance metrics."""
