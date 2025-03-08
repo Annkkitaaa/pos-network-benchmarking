@@ -150,7 +150,16 @@ selected_analysis = st.sidebar.radio(
 
 # Metric selection
 if selected_analysis != "Comprehensive Comparison":
-    analysis_category = MetricCategory(analysis_types[selected_analysis].upper())
+    category_str = analysis_types[selected_analysis].upper()
+    # Find the matching enum
+    for category in MetricCategory:
+        if category.name == category_str:
+            analysis_category = category
+            break
+    else:
+        st.error(f"Category {category_str} not found in MetricCategory enum")
+        st.stop()
+    
     available_metrics = get_metrics_by_category(analysis_category)
     metric_options = {m.name: m.id for m in available_metrics}
     

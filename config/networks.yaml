@@ -1,27 +1,19 @@
-# PoS Networks Configuration
-
 networks:
   ethereum:
     enabled: true
     endpoints:
-      - name: "Infura"
-        url: "https://mainnet.infura.io/v3/${INFURA_API_KEY}"
-        priority: 1
       - name: "Alchemy"
         url: "https://eth-mainnet.g.alchemy.com/v2/${ALCHEMY_API_KEY}"
-        priority: 2
+        priority: 1
     explorer:
       url: "https://api.etherscan.io/api"
       api_key: "${ETHERSCAN_API_KEY}"
     metrics:
       - validator_count
-      - active_validators
       - total_staked
       - reward_rate
       - avg_block_time
-      - finality_time
       - transaction_throughput
-      - gas_usage
       - mev_extraction
 
   solana:

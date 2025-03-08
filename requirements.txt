@@ -11,7 +11,12 @@ python-dotenv>=0.19.0
 # Blockchain-specific libraries
 web3>=5.29.0
 solana>=0.25.0
-cosmos-sdk>=0.1.0
+# cosmos-sdk>=0.1.0  # Removing this problematic package
+# Use requests for Cosmos API calls instead
+
+# For interacting with Cosmos networks
+# We'll use the requests library which is already included
+
 pycoingecko>=2.2.0
 
 # Data analysis
