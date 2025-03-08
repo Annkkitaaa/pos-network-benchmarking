@@ -252,12 +252,7 @@ If you encounter issues with the database:
 ls -la data/metrics.db
 ```
 
-2. Run the test script to verify database access:
-```bash
-python test_database.py
-```
-
-3. Generate fresh sample data:
+2. Generate fresh sample data:
 ```bash
 python generate_sample_data.py
 ```
